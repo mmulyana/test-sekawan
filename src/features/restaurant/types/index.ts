@@ -8,3 +8,9 @@ export type Restaurant = {
 	priceRange: number
 	id: string
 }
+
+export type Filter = {
+	status?: string
+	price?: string
+	category?: string
+}

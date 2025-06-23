@@ -5,6 +5,8 @@ import StarRating from '@/components/common/star-rating'
 import StatusBadge from '@/components/common/status-badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useRestaurant } from '@/features/restaurant/hooks/use-restaurant'
+import CardReview from '@/features/review/components/card-review'
+import { useReviews } from '@/features/review/hooks/use-reviews'
 import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -13,6 +15,9 @@ export default function Page() {
 	const params = useParams<{ id: string }>()
 
 	const { data, isPending } = useRestaurant(params)
+	const { data: reviews, isPending: isPendingReview } = useReviews({
+		restaurantId: params.id,
+	})
 
 	if (isPending) {
 		return (
@@ -49,7 +54,19 @@ export default function Page() {
 				<PriceRating rating={data?.rating} />
 			</div>
 			<div className='border-t-2 border-gray-100 mt-4'>
-				<p className='text-lg mt-2'>Review</p>
+				<p className='text-lg mt-2 mb-4'>Review</p>
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+					{isPendingReview && (
+						<>
+							<Skeleton className='h-40 rounded-lg bg-gray-200' />
+							<Skeleton className='h-40 rounded-lg bg-gray-200' />
+							<Skeleton className='h-40 rounded-lg bg-gray-200' />
+						</>
+					)}
+					{reviews?.map((i) => (
+						<CardReview key={i.id} data={i} />
+					))}
+				</div>
 			</div>
 		</div>
 	)
